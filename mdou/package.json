@@ -1,0 +1,23 @@
+{
+  "name": "mdou",
+  "homepage" : "http://egormerkushev.ru/mdou",
+  "version": "0.1.1",
+  "private": true,
+  "dependencies": {
+    "create-react-class": "^15.6.2",
+    "firebase": "^4.8.0",
+    "firebase-admin": "^5.4.0",
+    "firebase-functions": "^0.7.3",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-scripts": "1.0.17",
+    "react-select": "^1.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

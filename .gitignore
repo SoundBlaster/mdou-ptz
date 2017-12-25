@@ -57,3 +57,14 @@ typings/
 # dotenv environment variables file
 .env
 
+#idea
+.idea/
+
+# build folders
+build/
+
+# dist folders
+dist/
+
+# Firebase
+serviceAccountKey.json

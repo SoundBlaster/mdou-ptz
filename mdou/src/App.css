@@ -1,0 +1,42 @@
+.App {
+  text-align: center;
+  font-size: 12px;
+}
+
+.App-header {
+  background-color: #222;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.App-content {
+  text-align: left;
+  font-size: 1em;
+}
+
+.App-table {
+  float: left;
+  width: 33%;
+  padding: 0 30px;
+  box-sizing: border-box;
+}
+
+.App-select {
+  width: 50%;
+  margin: 0 auto 20px;
+}
+
+.App-table-date {
+  clear: both;
+  background-color: gray;
+  padding: 10px 0 10px 30px;
+  font-size: 1.5em;
+}
