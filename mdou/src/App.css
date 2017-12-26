@@ -17,6 +17,12 @@
   font-size: large;
 }
 
+.App-loading {
+  width: 100%;
+  text-align: center;
+  padding: 2em 0;
+}
+
 .App-content {
   text-align: left;
   font-size: 1em;
@@ -39,4 +45,8 @@
   background-color: gray;
   padding: 10px 0 10px 30px;
   font-size: 1.5em;
+}
+
+.App-totalChart {
+  margin: 0 0 2em 0;
 }
