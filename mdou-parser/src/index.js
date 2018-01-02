@@ -15,10 +15,13 @@ const config = {
   storageBucket: 'mdou-ptz.appspot.com',
   messagingSenderId: '385856270254'
 }
+
 firebase.initializeApp(config)
+
 const db = firebase.firestore()
 const parseurl = 'https://mdou.petrozavodsk-mo.ru/site/statistics'
-function parseStats() {
+
+const parseStats = () => {
   const agent = new https.Agent({
     rejectUnauthorized: false
   })
@@ -67,24 +70,96 @@ function parseStats() {
   })
 }
 
-function upload(value) {
+/**
+ * @param {string} value
+ */
+const uploadAsToday = value => {
   const date = new Date()
   const day = date.getDate()
   const month = date.getMonth()
   const year = date.getFullYear()
-  const format = day*1000000 + month*10000 + year
-  return db.collection('stats').doc(`${format}`).set({ value })
-    .then(function() {
-      console.log(`Document ${format} successfully written!`)
-    })
-    .catch(function(error) {
-      console.error('Error writing document: ', error)
+  const dateString = year * 10000 + month * 100 + day
+  return upload('days', value, dateString)
+}
+
+/**
+ * @param {string} collection - Collection name in Firebase storage
+ * @param {string} value
+ * @param {number} docName - String with date in format YYYYMMDD
+ */
+const upload = (collection, value, docName) => {
+  return db.collection(collection).doc(`${docName}`).set({ value })
+    .then(() => ({ value, docName }))
+    .catch(error => ({ value, docName, error }))
+}
+
+const loadData = () => {
+  return db.collection('stats').get()
+    .then((snapshot) => {
+      const data = []
+      snapshot.forEach((doc) => {
+        data.push({
+          date: doc.id,
+          value: doc.data().value,
+        })
+      })
+      return data
     })
 }
 
+const logData = data => {
+  console.log('loaded:', data.map(({ date }) => date))
+  return data
+}
+
+const fixDate = date => {
+  if (date.length === 8) {
+    // 01234567
+    // DDMMYYYY => YYYYMMDD
+    const day = date.slice(0, 2)
+    const month = date.slice(2, 4)
+    const year = date.slice(4,8)
+    return parseInt(`${year}${month}${day}`, 10)
+  }
+  return date
+}
+
+const fixDates = data => {
+  return data.map(({ date, value }) => ({ date: fixDate(date), value}))
+}
+
+const writeData = data => {
+  const promises = data.map(({ date, value }) => upload('days', value, date))
+  return Promise.all(promises)
+}
+
+// RUN
+/**
+ * Fix previous error in date format
+ */
+const fix = () => {
+  loadData()
+    .then(logData)
+    .then(fixDates)
+    .then(logData)
+    .then(writeData)
+    .then(result => {
+      console.log('done', result)
+    })
+    .catch(error => {
+      console.log('error', error)
+    })
+}
+
+/**
+ * Load, parse and write value for today
+ */
 parseStats()
   .then(data => JSON.stringify(data))
-  .then(upload)
-  .catch(e => {
-    console.log('error:', e)
+  .then(uploadAsToday)
+  .then(({ docName }) => {
+    console.log(`Document ${docName} successfully written!`)
+  })
+  .catch(({ error, docName }) => {
+    console.error(`Error writing document ${docName}: ${error}`)
   })

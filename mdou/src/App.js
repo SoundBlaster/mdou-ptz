@@ -45,7 +45,7 @@ const data = {
       data: [65, 59, 80, 81, 56, 55, 40],
     },
     {
-      label: 'Выданных',
+      label: 'На учете',
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(75,192,192,0.4)',
@@ -66,7 +66,7 @@ const data = {
       data: [76, 45, 34, 65, 88, 44, 65],
     },
     {
-      label: 'На учете',
+      label: 'Выданных',
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(192,192,71,0.4)',
@@ -136,7 +136,7 @@ class App extends Component {
   _loadStore() {
     if (!db) return
 
-    db.collection('stats').get()
+    db.collection('days').get()
       .then((snapshot) => {
         const data = []
         snapshot.forEach((doc) => {
@@ -179,18 +179,17 @@ class App extends Component {
 
   _renderContent() {
     if (this.state.content) {
-      const fixDate = date => (parseInt(date, 10) + 10000)
+      const fixDate = date => (parseInt(date, 10) + 100)
         .toLocaleString('en-US', { minimumIntegerDigits: 8, useGrouping:false })
       require('moment/locale/ru')
       // get labels for X axis
       const content = [...this.state.content]
       data.labels = content
         .reverse()
-        .map(record => moment(fixDate(record.date), 'DDMMYYYY')
+        .map(record => moment(fixDate(record.date), 'YYYYMMDD')
           .format('DD MMMM')
         )
 
-      debugger
       // get values from 0, 2, 5
       const vals = content
         .map(record => [
