@@ -24,7 +24,7 @@ const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
   datasets: [
     {
-      label: 'Принятых',
+      label: 'Принятых за год',
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(192,72,192,0.4)',
@@ -45,7 +45,7 @@ const data = {
       data: [65, 59, 80, 81, 56, 55, 40],
     },
     {
-      label: 'На учете',
+      label: 'На учете на дату',
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(75,192,192,0.4)',
@@ -66,7 +66,7 @@ const data = {
       data: [76, 45, 34, 65, 88, 44, 65],
     },
     {
-      label: 'Выданных',
+      label: 'Выданных за год',
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(192,192,71,0.4)',
@@ -102,13 +102,13 @@ const tableTitles = [
 
 const tableTitlesShort = [
   'Принято за год',
-  'Количество принятых заявлений за прошедшие 12 месяцев по району проживания',
-  'На учёте',
-  'Количество состоящих на учете по году рождения',
-  'Количество состоящих на учете по району проживания',
+  'Принято за год по району проживания',
+  'На учёте на дату',
+  'На учете по году рождения',
+  'На учете по району проживания',
   'Выдано за год',
-  'Количество выданных направлений за прошедшие 12 месяцев по году рождения',
-  'Количество выданных направлений за прошедшие 12 месяцев по району проживания',
+  'Выдано за год по году рождения',
+  'Выдано за год по району проживания',
 ]
 
 class App extends Component {
@@ -207,15 +207,18 @@ class App extends Component {
 
       let dates = this.state.content
         .map(record => record.value)
+
       if (this.state.selected.length) {
-        const idxs = this.state.selected.map(filter => filter.value)
-        dates = dates.map(date => date.filter((_, idx) => idxs.includes(idx)))
+        const idxs = this._getFilterIndexes()
+        dates = dates.map(date => date.filter((_, idx) => {
+          return idxs.includes(idx)
+        }))
       }
 
       return (
         <div>
           <LineChart
-            title={'Общие тренды за год'}
+            title={'Общие тренды'}
             className={'App-totalChart'}
             data={data}
           />
@@ -230,6 +233,8 @@ class App extends Component {
       </div>
     )
   }
+
+  _getFilterIndexes = () => this.state.selected.map(filter => filter.value)
 
   _renderFilters() {
     return (
@@ -258,16 +263,18 @@ class App extends Component {
   }
 
   _renderDate(date, i) {
+    const idxs = this._getFilterIndexes()
+    const idx = idxs.length ? idxs[i] : i
+    const title = `${tableTitles[idx]}`
     return (
       <div className='App-table' key={`table${i}`}>
-        <h2>{`${tableTitles[i]}`}</h2>
+        <h2>{title}</h2>
         {date.map((row, idx) => (<p key={`row${idx}`}>{row[0]} : {row[1]}</p>))}
       </div>
     )
   }
 
   _onChangeSelection(selectedOptions) {
-    console.log('select:', selectedOptions)
     this.setState({
       selected: selectedOptions,
     })
