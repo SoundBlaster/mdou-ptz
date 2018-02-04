@@ -29,6 +29,14 @@ class LineChart extends Component {
             maintainAspectRatio: true,
             scales: {
               yAxes: [{
+                id: 'BIG',
+                position: 'left',
+                ticks: {
+                  beginAtZero: true
+                }
+              }, {
+                id: 'LITTLE',
+                position: 'right',
                 ticks: {
                   beginAtZero: true
                 }

@@ -78,14 +78,16 @@ const uploadAsToday = value => {
   const day = date.getDate()
   const month = date.getMonth()
   const year = date.getFullYear()
-  const dateString = year * 10000 + month * 100 + day
-  return upload('days', value, dateString)
+  const hour = date.getHours()
+  const minute = date.getMinutes()
+  const key = year * 100000000 + month * 1000000 + day * 10000 + hour * 100 + minute
+  return upload('days', value, key)
 }
 
 /**
  * @param {string} collection - Collection name in Firebase storage
  * @param {string} value
- * @param {number} docName - String with date in format YYYYMMDD
+ * @param {number} docName - String with date in format YYYYMMDDHHmm
  */
 const upload = (collection, value, docName) => {
   return db.collection(collection).doc(`${docName}`).set({ value })
@@ -94,7 +96,8 @@ const upload = (collection, value, docName) => {
 }
 
 const loadData = () => {
-  return db.collection('stats').get()
+  return db.collection('stats')
+    .get()
     .then((snapshot) => {
       const data = []
       snapshot.forEach((doc) => {
@@ -158,7 +161,7 @@ parseStats()
   .then(data => JSON.stringify(data))
   .then(uploadAsToday)
   .then(({ docName }) => {
-    console.log(`Document ${docName} successfully written!`)
+    console.log(`${new Date().toISOString()} | Document ${docName} successfully written!`)
   })
   .catch(({ error, docName }) => {
     console.error(`Error writing document ${docName}: ${error}`)

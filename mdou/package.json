@@ -1,7 +1,7 @@
 {
   "name": "mdou",
   "homepage": "http://egormerkushev.ru/mdou",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "chart.js": "^2.7.1",
