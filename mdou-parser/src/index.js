@@ -1,5 +1,6 @@
-import API, { DAYS } from './mdou-api'
+import API, { DAYS, CONTENT } from './mdou-api'
 import Parser from './parser'
+import isEqual from 'lodash.isequal'
 
 const api = new API()
 const parser = new Parser()
@@ -42,7 +43,7 @@ const logSuccess = (...args) => {
 
 const logFailure = (...args) => {
   const { error, docName } = args[0]
-  console.error(`Error writing document ${docName}: ${error}`)
+  console.error(`Error ${docName || ''}: ${error.message ? error.message : error}`)
   return args
 }
 
@@ -52,17 +53,26 @@ const logFailure = (...args) => {
  */
 const stringify = data => JSON.stringify(data)
 
+const extractContent = result => result.filter(item => item[CONTENT])[0][CONTENT][0]
+
 /**
  * Load, parse and write value for today
  */
 const createNewRecord = () =>
-  parser.parse()
-  .then(stringify)
-  .then(uploadAsNow)
-  .then(logSuccess, logFailure)
+  api.loadStore()
+    .then(extractContent)
+    .then(content => {
+      parser.parse()
+        .then(result => {
+          if (!isEqual(result, content.value)) return result
+          throw { error: new Error('No changes') }
+        })
+        .then(stringify)
+        .then(uploadAsNow)
+        .then(logSuccess, logFailure)
+    })
 
 //
 // START RUNLOOP
 //
 createNewRecord()
-
