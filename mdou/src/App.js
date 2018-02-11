@@ -292,6 +292,7 @@ class App extends Component {
         </header>
         <p className='App-intro'>
           Здесь вы можете просмотреть историю изменений данных, представленных на странице <a target='_blank' rel='noopener noreferrer' href='https://mdou.petrozavodsk-mo.ru/site/statistics'>«Статистика»</a>.
+          Прислать свои данные вы можете на почту <a target="_blank" href="mailto:egor.merkushev@yandex.ru">egor.merkushev@yandex.ru</a>
         </p>
         <div className='App-content'>
           {this._renderQuery()}
