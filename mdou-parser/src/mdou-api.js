@@ -31,7 +31,7 @@ export default class API {
   upload = (collectionName, value, docName) =>
     db.collection(collectionName)
       .doc(`${docName}`)
-      .set({ value })
+      .set({ value, ts: docName })
       .then(() => ({ value, docName }))
       .catch(error => ({ value, docName, error }))
 
